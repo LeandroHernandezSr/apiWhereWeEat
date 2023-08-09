@@ -3,7 +3,7 @@
 
 interface Crud{
 
-    public function create($data);
+    public function create($tabla, $datos);
 
     public function delete($data);
 
