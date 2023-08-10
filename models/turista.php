@@ -1,7 +1,7 @@
 <?php
 
-include_once './dataBaseConnection.php';
-include_once './crud.php';
+include_once 'dataBaseConnection.php';
+include_once 'crud.php';
 
 class Turista extends DataBaseConnection implements Crud
 {
@@ -22,9 +22,12 @@ class Turista extends DataBaseConnection implements Crud
 
     private $activo;
 
+    private $list;
+
     public function __construct()
     {
         parent::__construct();
+        $this->list = array();
     }
 
     public function setAlias($alias)
@@ -148,8 +151,16 @@ class Turista extends DataBaseConnection implements Crud
 
     public function read($data)
     {
+        $query = "SELECT {$data['valores']} FROM {$data['tabla']}";
+        $stmt = $this->getConn()->prepare($query);
 
+        $stmt->execute();
+
+        $result = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        return $result;
     }
+
 
 
     public function filter($data)

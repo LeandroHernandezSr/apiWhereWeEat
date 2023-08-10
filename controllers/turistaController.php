@@ -1,7 +1,7 @@
 <?php
 
-require_once './models/turista.php';
-function insertarController($alias = '', $bloqueado = 1, $urlImg = '', $email = '', $idUsuario = 0, $contrasenia = '', $rol = '', $activo = 1, $nacionalidad = '')
+require_once '../models/turista.php';
+function insertarController($alias = '', $bloqueado = 0, $urlImg = '', $email = '', $idUsuario = 0, $contrasenia = '', $rol = '', $activo = 1, $nacionalidad = '')
 {
     $turista = new Turista();
     $datosTurista = array(
@@ -19,7 +19,17 @@ function insertarController($alias = '', $bloqueado = 1, $urlImg = '', $email = 
     return $turista->create("turista", $datosTurista);
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['accion']) & $_POST['accion']=='altaTurista') {
+function listarController()
+{
+    $turista = new Turista();
+    $data = array(
+        "valores" => "*",
+        "tabla" => "turista"
+    );
+    return $turista->read($data);
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['accion']) & $_POST['accion'] == 'altaTurista') {
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
 
@@ -37,4 +47,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['accion']) & $_POST['ac
 
     $mensaje = ($resultado) ? "Inserción exitosa" : "Error al insertar";
     echo $mensaje;
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['accion']) && $_GET['accion'] == 'listarTuristas') {
+    $turistas = listarController();
+    foreach ($turistas as $turista) {
+        header('Content-Type: application/json');
+        echo json_encode($turista);
+    }
 }

@@ -1,0 +1,7 @@
+{
+    "db_host":"localhost:3310",
+    "db_user":"root",
+    "db_password":"",
+    "db_driver":"mysql",
+    "database":"prueba"
+}
