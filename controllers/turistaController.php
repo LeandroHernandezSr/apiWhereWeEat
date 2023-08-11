@@ -29,23 +29,26 @@ function listarController()
     return $turista->read($data);
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['accion']) & $_POST['accion'] == 'altaTurista') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
 
-    $resultado = insertarController(
-        $data['alias'],
-        $data['bloqueado'],
-        $data['urlImg'],
-        $data['email'],
-        $data['idUsuario'],
-        $data['contrasenia'],
-        $data['rol'],
-        $data['activo'],
-        $data['nacionalidad']
-    );
-
-    $mensaje = ($resultado) ? "Inserción exitosa" : "Error al insertar";
+    if (isset($data['accion']) && $data['accion'] == 'altaTurista') {
+        $resultado = insertarController(
+            $data['alias'],
+            $data['bloqueado'],
+            $data['urlImg'],
+            $data['email'],
+            $data['idUsuario'],
+            $data['contrasenia'],
+            $data['rol'],
+            $data['activo'],
+            $data['nacionalidad']
+        );    
+        $mensaje ="Inserción exitosa";
+    } else {
+        $mensaje="Error: Clave 'accion' faltante o incorrecta en el JSON.";
+    }
     echo $mensaje;
 }
 

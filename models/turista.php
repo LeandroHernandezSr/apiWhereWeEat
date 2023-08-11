@@ -112,16 +112,14 @@ class Turista extends DataBaseConnection implements Crud
     }
     public function create($tabla, $datos)
     {
-
         $columnNames = implode(', ', array_keys($datos));
-        $placeholders = implode(', ', array_fill(0, count($datos), ':'));
-
+        $placeholders = implode(', ', array_map(function ($key) {
+            return ':' . $key;
+        }, array_keys($datos)));
 
         $query = "INSERT INTO $tabla ($columnNames) VALUES ($placeholders)";
 
-
         $stmt = $this->getConn()->prepare($query);
-
 
         foreach ($datos as $nombre => $valor) {
             $stmt->bindValue(':' . $nombre, $valor);
@@ -129,9 +127,9 @@ class Turista extends DataBaseConnection implements Crud
 
         $result = $stmt->execute();
 
-
         return $result;
     }
+
 
 
     public function delete($data)
