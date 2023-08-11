@@ -112,27 +112,24 @@ class Turista extends DataBaseConnection implements Crud
     }
     public function create($tabla, $datos)
     {
-        // Construir la parte de los nombres de columnas y los marcadores de posición
-        $columnNames = implode(', ', array_keys($datos));
-        $placeholders = implode(', ', array_fill(0, count($datos), '?'));
 
-        // Construir la consulta SQL
+        $columnNames = implode(', ', array_keys($datos));
+        $placeholders = implode(', ', array_fill(0, count($datos), ':'));
+
+
         $query = "INSERT INTO $tabla ($columnNames) VALUES ($placeholders)";
 
-        // Preparar la consulta
+
         $stmt = $this->getConn()->prepare($query);
 
-        // Enlazar los valores de los parámetros
-        $index = 1;
-        foreach ($datos as $valor) {
-            $stmt->bindValue($index, $valor);
-            $index++;
+
+        foreach ($datos as $nombre => $valor) {
+            $stmt->bindValue(':' . $nombre, $valor);
         }
 
-        // Ejecutar la consulta con los valores enlazados
         $result = $stmt->execute();
 
-        // Devuelve verdadero o falso según la consulta
+
         return $result;
     }
 
