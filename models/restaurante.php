@@ -157,7 +157,7 @@ class Restaurante extends DataBaseConnection implements Crud
 
 
 
-    public function filter($data)
+    public function filter($tabla,$datos)
     {
 
     }

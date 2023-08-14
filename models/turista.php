@@ -112,25 +112,35 @@ class Turista extends DataBaseConnection implements Crud
     }
     public function create($tabla, $datos)
     {
-        $columnNames = implode(', ', array_keys($datos));
-        $placeholders = implode(', ', array_map(function ($key) {
-            return ':' . $key;
-        }, array_keys($datos)));
-
-        $query = "INSERT INTO $tabla ($columnNames) VALUES ($placeholders)";
-
+        $query = "SELECT * FROM $tabla WHERE email = :email OR alias = :alias";
         $stmt = $this->getConn()->prepare($query);
+        $stmt->bindValue(':email', $datos['email']);
+        $stmt->bindValue(':alias', $datos['alias']);
+        $stmt->execute();
+        
+        if ($stmt->rowCount() > 0) {
+            return "Usuario o mail existentes, intente nuevamente";
+        } else {
+            $columnNames = implode(', ', array_keys($datos));
+            $placeholders = implode(', ', array_map(function ($key) {
+                return ':' . $key;
+            }, array_keys($datos)));
 
-        foreach ($datos as $nombre => $valor) {
-            $stmt->bindValue(':' . $nombre, $valor);
+            $query = "INSERT INTO $tabla ($columnNames) VALUES ($placeholders)";
+
+            $stmt = $this->getConn()->prepare($query);
+
+            foreach ($datos as $nombre => $valor) {
+                $stmt->bindValue(':' . $nombre, $valor);
+            }   
+
+            $stmt->execute();
+            
+            $result = "Insercion exitosa";
+
+            return $result;
         }
-
-        $result = $stmt->execute();
-
-        return $result;
     }
-
-
 
     public function delete($data)
     {
@@ -156,11 +166,35 @@ class Turista extends DataBaseConnection implements Crud
         return $result;
     }
 
-
-
-    public function filter($data)
+    public function filter($tabla, $datos)
     {
+        $columnNames = implode(', ', array_keys($datos));
+        $conditions = array_map(function ($key) {
+            return "$key = :$key";
+        }, array_keys($datos));
+        $query = "SELECT $columnNames FROM $tabla WHERE " . implode(' AND ', $conditions);
 
+        $stmt = $this->getConn()->prepare($query);
+
+        // Asignar valores a los marcadores de posición en la consulta
+        foreach ($datos as $key => $value) {
+            $stmt->bindValue(':' . $key, $value);
+        }
+
+        // Mostrar la consulta con los valores reales de los marcadores de posición
+        $debugQuery = $stmt->queryString;
+
+        foreach ($datos as $key => $value) {
+            $debugQuery = str_replace(":$key", $value, $debugQuery);
+        }
+        // Ejecutar la consulta
+        $stmt->execute();
+
+        // Obtener los resultados como objetos y retornarlos
+        $result = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        return $result;
     }
+
 
 }

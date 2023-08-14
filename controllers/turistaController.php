@@ -1,32 +1,36 @@
 <?php
 
 require_once '../models/turista.php';
-function insertarController($alias = '', $bloqueado = 0, $urlImg = '', $email = '', $idUsuario = 0, $contrasenia = '', $rol = '', $activo = 1, $nacionalidad = '')
+function insertarController($alias = '', $urlImg = '', $email = '', $idUsuario = 0, $contrasenia = '', $rol = '', $nacionalidad = '')
 {
     $turista = new Turista();
     $datosTurista = array(
         "alias" => $alias,
-        "bloqueado" => $bloqueado,
         "urlImg" => $urlImg,
         "email" => $email,
         "idUsuario" => $idUsuario,
         "contrasenia" => $contrasenia,
         "rol" => $rol,
-        "activo" => $activo,
         "nacionalidad" => $nacionalidad
     );
 
-    return $turista->create("turista", $datosTurista);
+    return $turista->create("usuarios", $datosTurista);
 }
 
-function listarController()
+function listarController($valores, $tabla)
 {
     $turista = new Turista();
     $data = array(
-        "valores" => "*",
-        "tabla" => "turista"
+        "valores" => "$valores",
+        "tabla" => "$tabla"
     );
     return $turista->read($data);
+}
+
+function filtrarController($tabla, $datos)
+{
+    $turista = new Turista();
+    return $turista->filter($tabla, $datos);
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -36,26 +40,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($data['accion']) && $data['accion'] == 'altaTurista') {
         $resultado = insertarController(
             $data['alias'],
-            $data['bloqueado'],
             $data['urlImg'],
             $data['email'],
             $data['idUsuario'],
             $data['contrasenia'],
             $data['rol'],
-            $data['activo'],
             $data['nacionalidad']
-        );    
-        $mensaje ="Inserción exitosa";
+        );
     } else {
-        $mensaje="Error: Clave 'accion' faltante o incorrecta en el JSON.";
+        $resultado='Error en la peticion, intente nuevamente';
     }
-    echo $mensaje;
+    echo $resultado;
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['accion']) && $_GET['accion'] == 'listarTuristas') {
-    $turistas = listarController();
+    $turistas = listarController("*", "usuarios");
     foreach ($turistas as $turista) {
         header('Content-Type: application/json');
         echo json_encode($turista);
     }
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['accion']) && $_GET['accion'] == 'filtrarTurista') {
+    $datos = array(
+        "alias" => $_GET['alias'],
+        "contrasenia" => $_GET['contrasenia']
+    );
+    $turista = filtrarController("usuarios", $datos);
+    echo json_encode($turista);
 }

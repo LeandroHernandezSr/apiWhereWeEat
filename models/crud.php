@@ -14,7 +14,7 @@ interface Crud{
     public function read($data);
 
 
-    public function filter($data);
+    public function filter($tabla,$datos);
 
 
     

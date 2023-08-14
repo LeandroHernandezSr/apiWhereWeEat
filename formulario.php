@@ -10,8 +10,6 @@
     <form id="turistaForm" method='post'>
         <label for="alias">Alias:</label>
         <input type="text" name="alias" id="alias" value="ejemplo" required><br>
-        <label for="bloqueado">Bloqueado:</label>
-        <input type="number" name="bloqueado" id="bloqueado" value="0" required><br>
         <label for="urlImg">URL de la imagen:</label>
         <input type="text" name="urlImg" id="urlImg" value="imagen.jpg" required><br>
         <label for="email">Email:</label>
@@ -22,8 +20,6 @@
         <input type="password" name="contrasenia" id="contrasenia" value="contrasena123" required><br>
         <label for="rol">Rol:</label>
         <input type="text" name="rol" id="rol" value="usuario" required><br>
-        <label for="activo">Activo:</label>
-        <input type="number" name="activo" id="activo" value="1" required><br>
         <label for="nacionalidad">Nacionalidad:</label>
         <input type="text" name="nacionalidad" id="nacionalidad" value="país" required><br>
         <button type="button" onclick="enviarDatos()">Enviar</button>
@@ -35,13 +31,11 @@
             var data = {
                 accion: "altaTurista",
                 alias: form.alias.value,
-                bloqueado: parseInt(form.bloqueado.value),
                 urlImg: form.urlImg.value,
                 email: form.email.value,
                 idUsuario: parseInt(form.idUsuario.value),
                 contrasenia: form.contrasenia.value,
                 rol: form.rol.value,
-                activo: parseInt(form.activo.value),
                 nacionalidad: form.nacionalidad.value
             };
 
