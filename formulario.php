@@ -17,7 +17,7 @@
         <label for="email">Email:</label>
         <input type="email" name="email" id="email" value="correo@example.com" required><br>
         <label for="idUsuario">ID de Usuario:</label>
-        <input type="number" name="idUsuario" id="idUsuario" value="123" required><br>
+        <input type="text" name="idUsuario" id="idUsuario" value="123" required><br>
         <label for="contrasenia">Contraseña:</label>
         <input type="password" name="contrasenia" id="contrasenia" value="contrasena123" required><br>
         <label for="rol">Rol:</label>
