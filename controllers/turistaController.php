@@ -1,6 +1,7 @@
 <?php
 
 require_once '../models/turista.php';
+
 function insertarController($alias = '', $urlImg = '', $email = '', $idUsuario = 0, $contrasenia = '', $rol = '', $nacionalidad = '')
 {
     $turista = new Turista();
@@ -38,6 +39,7 @@ function borrarController($tabla, $datos){
     $resultado=$turista->delete($tabla,$datos);
     echo $resultado;
 }
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $json = file_get_contents('php://input');
@@ -85,3 +87,4 @@ if($_SERVER['REQUEST_METHOD'] == 'DELETE' && isset($_GET['accion']) && $_GET['ac
     
     borrarController("usuarios",$datos);
 }
+
