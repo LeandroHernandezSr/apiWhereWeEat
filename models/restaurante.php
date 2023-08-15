@@ -131,7 +131,7 @@ class Restaurante extends DataBaseConnection implements Crud
 
 
 
-    public function delete($data)
+    public function delete($tabla,$datos)
     {
 
     }

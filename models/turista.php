@@ -112,40 +112,81 @@ class Turista extends DataBaseConnection implements Crud
     }
     public function create($tabla, $datos)
     {
-        $query = "SELECT * FROM $tabla WHERE email = :email OR alias = :alias";
-        $stmt = $this->getConn()->prepare($query);
-        $stmt->bindValue(':email', $datos['email']);
-        $stmt->bindValue(':alias', $datos['alias']);
-        $stmt->execute();
-        
-        if ($stmt->rowCount() > 0) {
-            return "Usuario o mail existentes, intente nuevamente";
-        } else {
-            $columnNames = implode(', ', array_keys($datos));
-            $placeholders = implode(', ', array_map(function ($key) {
-                return ':' . $key;
-            }, array_keys($datos)));
-
-            $query = "INSERT INTO $tabla ($columnNames) VALUES ($placeholders)";
-
+        try {
+            $query = "SELECT * FROM $tabla WHERE email = :email OR alias = :alias";
             $stmt = $this->getConn()->prepare($query);
-
-            foreach ($datos as $nombre => $valor) {
-                $stmt->bindValue(':' . $nombre, $valor);
-            }   
-
+            $stmt->bindValue(':email', $datos['email']);
+            $stmt->bindValue(':alias', $datos['alias']);
             $stmt->execute();
-            
-            $result = "Insercion exitosa";
 
-            return $result;
+            if ($stmt->rowCount() > 0) {
+                return "Usuario o mail existentes, intente nuevamente";
+            } else {
+                $columnNames = implode(', ', array_keys($datos));
+                $placeholders = implode(', ', array_map(function ($key) {
+                    return ':' . $key;
+                }, array_keys($datos)));
+
+                $query = "INSERT INTO $tabla ($columnNames) VALUES ($placeholders)";
+
+                $stmt = $this->getConn()->prepare($query);
+
+                foreach ($datos as $nombre => $valor) {
+                    $stmt->bindValue(':' . $nombre, $valor);
+                }
+
+                $stmt->execute();
+
+                $result = "Insercion exitosa";
+
+                return $result;
+            }
+        }catch(PDOException $ex){
+            echo "Error al insertar: ".$ex->getMessage();
         }
     }
 
-    public function delete($data)
+    public function delete($tabla, $datos)
     {
+        try {
+            $query = "SELECT * FROM $tabla WHERE alias = :alias AND contrasenia = :contrasenia";
+            $stmt = $this->getConn()->prepare($query);
+            $stmt->bindValue(':alias', $datos['alias']);
+            $stmt->bindValue(':contrasenia', $datos['contrasenia']);
 
+            $stmt->execute();
+
+            if ($stmt->rowCount() > 0) {
+                $columnNames = implode(', ', array_keys($datos));
+                $conditions = array_map(function ($key) {
+                    return "$key = :$key";
+                }, array_keys($datos));
+                $query = "DELETE FROM $tabla WHERE " . implode(' AND ', $conditions);
+
+                $stmt = $this->getConn()->prepare($query);
+
+                // Asignar valores a los marcadores de posición en la consulta
+                foreach ($datos as $key => $value) {
+                    $stmt->bindValue(':' . $key, $value);
+                }
+
+                // Ejecutar la consulta con condicional para ver qué retorna
+                if ($stmt->execute()) {
+                    return "Se eliminó correctamente";
+                } else {
+                    return "Error al eliminar el registro";
+                }
+            } else {
+                return "No se encontró ningún registro que coincida con los datos proporcionados";
+            }
+        } catch (PDOException $e) {
+            // Manejar el error de PDO
+            return "Error al eliminar: " . $e->getMessage();
+        }
     }
+
+
+
 
 
     public function alter($data)

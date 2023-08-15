@@ -33,6 +33,12 @@ function filtrarController($tabla, $datos)
     return $turista->filter($tabla, $datos);
 }
 
+function borrarController($tabla, $datos){
+    $turista=new Turista();
+    $resultado=$turista->delete($tabla,$datos);
+    echo $resultado;
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
@@ -68,4 +74,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['accion']) && $_GET['acci
     );
     $turista = filtrarController("usuarios", $datos);
     echo json_encode($turista);
+}
+
+
+if($_SERVER['REQUEST_METHOD'] == 'DELETE' && isset($_GET['accion']) && $_GET['accion'] == 'eliminarTurista'){
+    $datos = array(
+        "alias" => $_GET['alias'],
+        "contrasenia" => $_GET['contrasenia']
+    );
+    
+    borrarController("usuarios",$datos);
 }
