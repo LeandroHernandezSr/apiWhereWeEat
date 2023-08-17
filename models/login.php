@@ -13,28 +13,37 @@ class Login
     public function authenticate($tabla)
     {
         try {
-            // Generar salt unico para cada usuario
-            $salt=bin2hex(random_bytes(16));
-            //Combinar la contrasenia del usuario con el salt
-            $combinedPassword=$salt.$this->userModel->getContrasenia;
-            //Generar un hash seguro usando el algoritmo bcrypt
-            $hashedPass=password_hash($combinedPassword,PASSWORD_BCRYPT);
-            //Almaceno nuevamente
-            $this->userModel->setContrasenia($hashedPass);
-            
-            $query = "SELECT * FROM $tabla WHERE email = :email AND contrasenia = :contrasenia";
-            $stmt = $this->userModel->getConn()->prepare($query);
+            $conn = $this->userModel->getConn(); // Obtener la conexión desde el modelo
+
+            // Consulta para obtener el salt y la contraseña hash del usuario según su email
+            $query = "SELECT salt, contrasenia FROM $tabla WHERE email = :email";
+            $stmt = $conn->prepare($query);
             $stmt->bindValue(":email", $this->userModel->getEmail());
-            $stmt->bindValue(":contrasenia", $this->userModel->getContrasenia());
-            if ($stmt->execute() && $stmt->rowCount() > 0) {
-                return true; 
+            $stmt->execute();
+
+            $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$userData) {
+                return false; // Usuario no encontrado
+            }
+
+            $salt = $userData['salt'];
+            $storedHashedPassword = $userData['contrasenia'];
+
+            // Combinar la contraseña del usuario con el salt
+            $combinedPassword = $salt . $this->userModel->getContrasenia();
+
+            // Verificar la contraseña utilizando password_verify
+            if (password_verify($combinedPassword, $storedHashedPassword)) {
+                return true; // Autenticación exitosa
             } else {
-                return false; // Datos incorrectos
+                return false; // Contraseña incorrecta
             }
         } catch (PDOException $ex) {
             echo "Error en la conexión: " . $ex->getMessage();
         }
     }
+
 
 
 }

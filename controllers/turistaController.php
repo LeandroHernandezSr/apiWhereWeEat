@@ -9,6 +9,7 @@ function insertarController($alias = '', $urlImg = '', $email = '', $idUsuario =
         "alias" => $alias,
         "urlImg" => $urlImg,
         "email" => $email,
+        "salt" => "",
         "idUsuario" => $idUsuario,
         "contrasenia" => $contrasenia,
         "rol" => $rol,
