@@ -122,6 +122,15 @@ class Turista extends DataBaseConnection implements Crud
             if ($stmt->rowCount() > 0) {
                 return "Usuario o mail existentes, intente nuevamente";
             } else {
+                // Generar salt unico para cada usuario
+                $salt=bin2hex(random_bytes(16));
+                //Combinar la contrasenia del usuario con el salt
+                $combinedPassword=$salt.$datos['contrasenia'];
+                //Generar un hash seguro usando el algoritmo bcrypt
+                $hashedPass=password_hash($combinedPassword,PASSWORD_BCRYPT);
+                //Almaceno nuevamente en el arreglo
+                $datos['contrasenia']=$hashedPass;
+                
                 $columnNames = implode(', ', array_keys($datos));
                 $placeholders = implode(', ', array_map(function ($key) {
                     return ':' . $key;
