@@ -26,15 +26,9 @@ class Login
             if (!$userData) {
                 return false; // Usuario no encontrado
             }
-
-            $salt = $userData['salt'];
-            $storedHashedPassword = $userData['contrasenia'];
-
-            // Combinar la contraseña del usuario con el salt
-            $combinedPassword = $salt . $this->userModel->getContrasenia();
-
+            
             // Verificar la contraseña utilizando password_verify
-            if (password_verify($combinedPassword, $storedHashedPassword)) {
+            if (password_verify($this->userModel->getContrasenia(), $userData['contrasenia'])) {
                 return true; // Autenticación exitosa
             } else {
                 return false; // Contraseña incorrecta
