@@ -16,7 +16,7 @@ class Login
             $conn = $this->userModel->getConn(); // Obtener la conexión desde el modelo
 
             // Consulta para obtener el salt y la contraseña hash del usuario según su email
-            $query = "SELECT salt, contrasenia FROM $tabla WHERE email = :email";
+            $query = "SELECT contrasenia FROM $tabla WHERE email = :email";
             $stmt = $conn->prepare($query);
             $stmt->bindValue(":email", $this->userModel->getEmail());
             $stmt->execute();
