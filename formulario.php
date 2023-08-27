@@ -14,14 +14,11 @@
         <input type="text" name="urlImg" id="urlImg" value="imagen.jpg" required><br>
         <label for="email">Email:</label>
         <input type="email" name="email" id="email" value="correo@example.com" required><br>
-        <label for="idUsuario">ID de Usuario:</label>
         <input type="text" name="idUsuario" id="idUsuario" value="123" required><br>
         <label for="contrasenia">Contraseña:</label>
         <input type="password" name="contrasenia" id="contrasenia" value="contrasena123" required><br>
         <label for="rol">Rol:</label>
         <input type="text" name="rol" id="rol" value="usuario" required><br>
-        <label for="nacionalidad">Nacionalidad:</label>
-        <input type="text" name="nacionalidad" id="nacionalidad" value="país" required><br>
         <button type="button" onclick="enviarDatos()">Enviar</button>
     </form>
 
@@ -29,20 +26,21 @@
         function enviarDatos() {
             var form = document.getElementById("turistaForm");
             var data = {
-                accion: "altaTurista",
+                accion: "altaUsuario",
                 alias: form.alias.value,
-                urlImg: form.urlImg.value,
                 email: form.email.value,
-                idUsuario: parseInt(form.idUsuario.value),
-                contrasenia: form.contrasenia.value,
-                rol: form.rol.value,
-                nacionalidad: form.nacionalidad.value
+                contrasena: form.contrasenia.value,
+                activo:"S",
+                bloqueado:"N",
+                url_img_usuario: form.urlImg.value,
+                fecha_cambio_pwd:null,
+                rol: form.rol.value
             };
 
             var jsonData = JSON.stringify(data);
 
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "controllers/turistaController.php", true);
+            xhr.open("POST", "controllers/usuarioController.php", true);
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
             xhr.onreadystatechange = function () {

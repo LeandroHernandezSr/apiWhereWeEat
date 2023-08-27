@@ -1,74 +1,20 @@
 <?php
-
-include_once 'dataBaseConnection.php';
 include_once 'crud.php';
+include_once 'usuario.php';
 
-class Turista extends DataBaseConnection implements Crud
+class Turista extends Usuario implements Crud
 {
-
-    private $alias;
-
-    private $bloqueado;
-
-    private $urlImg;
-
-    private $email;
 
     private $idUsuario;
 
-    private $contrasenia;
+    private $nacionalidad;
 
-    private $rol;
+    private $motivoAlojamiento;
 
-    private $activo;
-
-    private $list;
 
     public function __construct()
     {
         parent::__construct();
-        $this->list = array();
-    }
-
-    public function setAlias($alias)
-    {
-        $this->alias = $alias;
-    }
-
-    public function getAlias()
-    {
-        return $this->alias;
-    }
-
-
-    public function setBloqueado($bloqueado)
-    {
-        $this->bloqueado = $bloqueado;
-    }
-
-    public function getBloqueado()
-    {
-        return $this->bloqueado;
-    }
-
-    public function setUrlImg($urlImg)
-    {
-        $this->urlImg = $urlImg;
-    }
-
-    public function getUrlImg()
-    {
-        return $this->urlImg;
-    }
-
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-
-    public function getEmail()
-    {
-        return $this->email;
     }
 
     public function setIdUsuario($idUsuario)
@@ -81,54 +27,44 @@ class Turista extends DataBaseConnection implements Crud
         return $this->idUsuario;
     }
 
-    public function setContrasenia($contrasenia)
+    public function setNacionalidad($nacionalidad)
     {
-        $this->contrasenia = $contrasenia;
+        $this->nacionalidad = $nacionalidad;
     }
 
-    public function getContrasenia()
+    public function getNacionalidad()
     {
-        return $this->contrasenia;
+        return $this->nacionalidad;
     }
 
-    public function setRol($rol)
+    public function setMotivoAlojamiento($motivoAlojamiento)
     {
-        $this->rol = $rol;
+        $this->motivoAlojamiento = $motivoAlojamiento;
     }
 
-    public function getRol()
+    public function getMotivoAlojamiento()
     {
-        return $this->rol;
+        return $this->motivoAlojamiento;
     }
 
-    public function setActivo($activo)
-    {
-        $this->activo = $activo;
-    }
-
-    public function getActivo()
-    {
-        return $this->activo;
-    }
     public function create($tabla, $datos)
     {
         try {
-            $query = "SELECT * FROM $tabla WHERE email = :email OR alias = :alias";
+            $query = "SELECT * FROM $tabla WHERE email = :email";
             $stmt = $this->getConn()->prepare($query);
             $stmt->bindValue(':email', $datos['email']);
-            $stmt->bindValue(':alias', $datos['alias']);
             $stmt->execute();
 
             if ($stmt->rowCount() > 0) {
-                return "Usuario o mail existentes, intente nuevamente";
+                return false;
             } else {
-    
+
                 //Generar un hash seguro usando el algoritmo bcrypt
-                $hashedPass=password_hash($datos['contrasenia'],PASSWORD_BCRYPT);
+                $hashedPass = password_hash($datos['contrasena'], PASSWORD_BCRYPT);
 
                 //Almaceno nuevamente la contraseña
-                $datos['contrasenia']=$hashedPass;
-                
+                $datos['contrasena'] = $hashedPass;
+
                 $columnNames = implode(', ', array_keys($datos));
                 $placeholders = implode(', ', array_map(function ($key) {
                     return ':' . $key;
@@ -144,14 +80,49 @@ class Turista extends DataBaseConnection implements Crud
 
                 $stmt->execute();
 
-                $result = "Insercion exitosa";
-
-                return $result;
+                return true;
             }
-        }catch(PDOException $ex){
-            echo "Error al insertar: ".$ex->getMessage();
+        } catch (PDOException $ex) {
+            echo "Error al insertar: " . $ex->getMessage();
         }
     }
+
+    public function createInTurista($tabla, $datos, $datosTurista)
+    {
+        try {
+            $query = "SELECT id_usuario FROM usuarios WHERE email = :email";
+            $stmt = $this->getConn()->prepare($query);
+            $stmt->bindValue(':email', $datos['email']);
+            $stmt->execute();
+            $idRows = $stmt->fetchAll();
+            
+            if (!empty($idRows)) {
+                $datosTurista['id_usuario'] = $idRows[0]['id_usuario'];
+                $columnNames = implode(', ', array_keys($datosTurista));
+                $placeholders = implode(', ', array_map(function ($key) {
+                    return ':' . $key;
+                }, array_keys($datosTurista)));
+    
+                $query = "INSERT INTO $tabla ($columnNames) VALUES ($placeholders)";
+    
+                $stmt = $this->getConn()->prepare($query);
+    
+                foreach ($datosTurista as $nombre => $valor) {
+                    $stmt->bindValue(':' . $nombre, $valor);
+                }
+    
+                $stmt->execute();
+    
+                return true;
+            } else {
+                return "No se encontró ningún registro con ese email.";
+            }
+        } catch (PDOException $ex) {
+            // Aquí podrías lanzar una excepción personalizada o guardar el mensaje en una variable para un manejo más adecuado
+            throw new Exception("Error al insertar: " . $ex->getMessage());
+        }
+    }
+    
 
     public function delete($tabla, $datos)
     {
@@ -191,9 +162,6 @@ class Turista extends DataBaseConnection implements Crud
             return "Error al eliminar: " . $e->getMessage();
         }
     }
-
-
-
 
 
     public function alter($data)

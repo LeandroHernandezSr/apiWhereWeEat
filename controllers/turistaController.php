@@ -2,21 +2,32 @@
 
 require_once '../models/turista.php';
 
-function insertarController($alias = '', $urlImg = '', $email = '', $idUsuario = 0, $contrasenia = '', $rol = '', $nacionalidad = '')
+function insertarController($alias = '', $url_img_usuario = '', $email = '', $contrasena = '', $rol = '',$nacionalidad='',$motivoAlojamiento='')
 {
     $turista = new Turista();
-    $datosTurista = array(
+    $datosUsuario = array(
         "alias" => $alias,
-        "urlImg" => $urlImg,
+        "url_img_usuario" => $url_img_usuario,
         "email" => $email,
-        "salt" => "",
-        "idUsuario" => $idUsuario,
-        "contrasenia" => $contrasenia,
-        "rol" => $rol,
-        "nacionalidad" => $nacionalidad
+        "contrasena" => $contrasena,
+        "rol" => $rol
     );
 
-    return $turista->create("usuarios", $datosTurista);
+    $datosTurista=array(
+        "nacionalidad"=>$nacionalidad,
+        "motivo_alojamiento"=>$motivoAlojamiento,
+        "id_usuario"=>""
+    );
+
+    if($turista->create("usuarios", $datosUsuario)){
+       if($turista->createInTurista("turista",$datosUsuario,$datosTurista)){
+            echo "Creacion de usuario exitosa";
+       }else{
+            echo "Error en la creacion de usuario";
+       }
+    }else{
+        echo "El usuario ya existe";
+    }
 }
 
 function listarController($valores, $tabla)
@@ -49,12 +60,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($data['accion']) && $data['accion'] == 'altaTurista') {
         $resultado = insertarController(
             $data['alias'],
-            $data['urlImg'],
+            $data['url_img_usuario'],
             $data['email'],
-            $data['idUsuario'],
             $data['contrasenia'],
             $data['rol'],
-            $data['nacionalidad']
+            $data['nacionalidad'],
+            $data['motivo_alojamiento']
         );
     } else {
         $resultado='Error en la peticion, intente nuevamente';

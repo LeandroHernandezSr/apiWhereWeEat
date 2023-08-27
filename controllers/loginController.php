@@ -7,7 +7,7 @@ function loginTuristaController($tabla, $datos)
     $turista = new Turista();
     $login = new Login($turista);
     $turista->setEmail($datos['email']);
-    $turista->setContrasenia($datos['contrasenia']);
+    $turista->setContrasenia($datos['contrasena']);
     return $login->authenticate($tabla);
 }
 
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $json = file_get_contents('php://input');
                 $data = json_decode($json, true);
                 // Validar los datos recibidos
-                if (isset($data['email']) && isset($data['contrasenia'])) {
+                if (isset($data['email']) && isset($data['contrasena'])) {
                     // Intentar autenticar al usuario
                     if (loginTuristaController("usuarios", $data)) {
                         echo json_encode(array("mensaje" => "Logueado correctamente"));
