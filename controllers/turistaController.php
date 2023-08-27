@@ -21,12 +21,12 @@ function insertarController($alias = '', $url_img_usuario = '', $email = '', $co
 
     if($turista->create("usuarios", $datosUsuario)){
        if($turista->createInTurista("turista",$datosUsuario,$datosTurista)){
-            echo "Creacion de usuario exitosa";
+            return "Creacion de usuario exitosa";
        }else{
-            echo "Error en la creacion de usuario";
+            return "Error en la creacion de usuario";
        }
     }else{
-        echo "El usuario ya existe";
+        return "El usuario ya existe";
     }
 }
 
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data['alias'],
             $data['url_img_usuario'],
             $data['email'],
-            $data['contrasenia'],
+            $data['contrasena'],
             $data['rol'],
             $data['nacionalidad'],
             $data['motivo_alojamiento']

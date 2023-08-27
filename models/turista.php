@@ -58,10 +58,8 @@ class Turista extends Usuario implements Crud
             if ($stmt->rowCount() > 0) {
                 return false;
             } else {
-
-                //Generar un hash seguro usando el algoritmo bcrypt
-                $hashedPass = password_hash($datos['contrasena'], PASSWORD_BCRYPT);
-
+                $hashedPass = password_hash($datos['contrasena'],PASSWORD_BCRYPT);
+        
                 //Almaceno nuevamente la contraseña
                 $datos['contrasena'] = $hashedPass;
 
@@ -95,24 +93,24 @@ class Turista extends Usuario implements Crud
             $stmt->bindValue(':email', $datos['email']);
             $stmt->execute();
             $idRows = $stmt->fetchAll();
-            
+
             if (!empty($idRows)) {
                 $datosTurista['id_usuario'] = $idRows[0]['id_usuario'];
                 $columnNames = implode(', ', array_keys($datosTurista));
                 $placeholders = implode(', ', array_map(function ($key) {
                     return ':' . $key;
                 }, array_keys($datosTurista)));
-    
+
                 $query = "INSERT INTO $tabla ($columnNames) VALUES ($placeholders)";
-    
+
                 $stmt = $this->getConn()->prepare($query);
-    
+
                 foreach ($datosTurista as $nombre => $valor) {
                     $stmt->bindValue(':' . $nombre, $valor);
                 }
-    
+
                 $stmt->execute();
-    
+
                 return true;
             } else {
                 return "No se encontró ningún registro con ese email.";
@@ -122,7 +120,7 @@ class Turista extends Usuario implements Crud
             throw new Exception("Error al insertar: " . $ex->getMessage());
         }
     }
-    
+
 
     public function delete($tabla, $datos)
     {
