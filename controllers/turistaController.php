@@ -2,7 +2,7 @@
 
 require_once '../models/turista.php';
 
-function insertarController($alias = '', $url_img_usuario = '', $email = '', $contrasena = '', $rol = '',$nacionalidad='',$motivoAlojamiento='')
+function insertarController($alias = '', $url_img_usuario = '', $email = '', $contrasena = '', $rol = '',$nacionalidad='',$motivoAlojamiento='',$nombres='',$apellidos='')
 {
     $turista = new Turista();
     $datosUsuario = array(
@@ -16,7 +16,9 @@ function insertarController($alias = '', $url_img_usuario = '', $email = '', $co
     $datosTurista=array(
         "nacionalidad"=>$nacionalidad,
         "motivo_alojamiento"=>$motivoAlojamiento,
-        "id_usuario"=>""
+        "id_usuario"=>"",
+        "nombres"=>$nombres,
+        "apellidos"=>$apellidos
     );
 
     if($turista->create("usuarios", $datosUsuario)){
@@ -65,7 +67,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data['contrasena'],
             $data['rol'],
             $data['nacionalidad'],
-            $data['motivo_alojamiento']
+            $data['motivo_alojamiento'],
+            $data['nombres'],
+            $data['apellidos']
         );
     } else {
         $resultado='Error en la peticion, intente nuevamente';
@@ -75,11 +79,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['accion']) && $_GET['accion'] == 'listarTuristas') {
     $turistas = listarController("*", "usuarios");
+     
+    header('Content-Type: application/json');
+    
+    $turistas_array = array();
     foreach ($turistas as $turista) {
-        header('Content-Type: application/json');
-        echo json_encode($turista);
+        $turistas_array[] = $turista;
     }
+    
+
+    echo json_encode($turistas_array);
 }
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['accion']) && $_GET['accion'] == 'filtrarTurista') {
     $datos = array(

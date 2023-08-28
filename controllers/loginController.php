@@ -11,6 +11,16 @@ function loginTuristaController($tabla, $datos)
     return $login->authenticate($tabla);
 }
 
+function loginRestauranteController($tabla, $datos)
+{
+    $restaurante = new Restaurante();
+    $login = new Login($restaurante);
+    $restaurante->setEmail($datos['email']);
+    $restaurante->setContrasenia($datos['contrasena']);
+    return $login->authenticate($tabla);
+}
+
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
@@ -18,6 +28,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($data['accion'])) {
         switch ($data['accion']) {
             case 'loginTurista':
+                $json = file_get_contents('php://input');
+                $data = json_decode($json, true);
+                // Validar los datos recibidos
+                if (isset($data['email']) && isset($data['contrasena'])) {
+                    // Intentar autenticar al usuario
+                    if (loginTuristaController("usuarios", $data)) {
+                        echo json_encode(array("mensaje" => "Logueado correctamente"));
+                    } else {
+                        echo json_encode(array("mensaje" => "Credenciales incorrectas"));
+                    }
+                } else {
+                    echo json_encode(array("mensaje" => "Datos incompletos"));
+                }
+                break;
+            case 'loginRestaurante':
                 $json = file_get_contents('php://input');
                 $data = json_decode($json, true);
                 // Validar los datos recibidos

@@ -2,7 +2,8 @@
 include_once 'crud.php';
 include_once 'usuario.php';
 
-class Restaurante extends Usuario implements Crud{
+class Restaurante extends Usuario implements Crud
+{
     private $tipoRestaurante;
 
     private $nombre;
@@ -11,60 +12,69 @@ class Restaurante extends Usuario implements Crud{
 
     private $direccionRest;
 
-    public function __construct(){
+    public function __construct()
+    {
         parent::__construct();
     }
 
-    public function setTipoRestaruante($tipoRestaurante){
-        $this->tipoRestaurante=$tipoRestaurante;
+    public function setTipoRestaruante($tipoRestaurante)
+    {
+        $this->tipoRestaurante = $tipoRestaurante;
     }
 
-    public function getTipoRestaurante(){
+    public function getTipoRestaurante()
+    {
         return $this->tipoRestaurante;
     }
 
-    public function setNombre($nombre){
-        $this->nombre=$nombre;
+    public function setNombre($nombre)
+    {
+        $this->nombre = $nombre;
     }
 
-    public function getNombre(){
+    public function getNombre()
+    {
         return $this->nombre;
     }
 
-    public function setNroLocal($nroLocal){
-        $this->nroLocal=$nroLocal;
+    public function setNroLocal($nroLocal)
+    {
+        $this->nroLocal = $nroLocal;
     }
 
-    public function getNroLocal(){
+    public function getNroLocal()
+    {
         return $this->nroLocal;
     }
 
-    public function setDireccionRest($direccionRest){
-        $this->direccionRest=$direccionRest;
+    public function setDireccionRest($direccionRest)
+    {
+        $this->direccionRest = $direccionRest;
     }
 
-    public function getDireccionRest(){
+    public function getDireccionRest()
+    {
         return $this->direccionRest;
     }
 
     public function create($tabla, $datos)
     {
         try {
-            $query = "SELECT * FROM $tabla WHERE id = :id";
+            $query = "SELECT * FROM $tabla WHERE email = :email";
             $stmt = $this->getConn()->prepare($query);
-            $stmt->bindValue(':id', $datos['id']);
+            $stmt->bindValue(':email', $datos['email']);
             $stmt->execute();
-
+            
             if ($stmt->rowCount() > 0) {
                 return "id ya almacenada, intente nuevamente";
             } else {
-    
+
                 //Generar un hash seguro usando el algoritmo bcrypt
-                $hashedPass=password_hash($datos['contrasenia'],PASSWORD_BCRYPT);
+                $hashedPass = password_hash($datos['contrasenia'], PASSWORD_BCRYPT);
 
                 //Almaceno nuevamente la contraseña
-                $datos['contrasenia']=$hashedPass;
-                
+                $datos['contrasenia'] = $hashedPass;
+
                 $columnNames = implode(', ', array_keys($datos));
                 $placeholders = implode(', ', array_map(function ($key) {
                     return ':' . $key;
@@ -84,8 +94,43 @@ class Restaurante extends Usuario implements Crud{
 
                 return $result;
             }
-        }catch(PDOException $ex){
-            echo "Error al insertar: ".$ex->getMessage();
+        } catch (PDOException $ex) {
+            echo "Error al insertar: " . $ex->getMessage();
+        }
+    }
+
+    public function createInRestaurante($tabla, $datos, $datosRestaurante)
+    {
+        try {
+            $query = "SELECT id_usuario FROM usuarios WHERE email = :email";
+            $stmt = $this->getConn()->prepare($query);
+            $stmt->bindValue(':email', $datos['email']);
+            $stmt->execute();
+            $idRows = $stmt->fetchAll();
+
+            if (!empty($idRows)) {
+                $datosRestaurante['id_usuario'] = $idRows[0]['id_usuario'];
+                $columnNames = implode(', ', array_keys($datosRestaurante));
+                $placeholders = implode(', ', array_map(function ($key) {
+                    return ':' . $key;
+                }, array_keys($datosRestaurante)));
+
+                $query = "INSERT INTO $tabla ($columnNames) VALUES ($placeholders)";
+
+                $stmt = $this->getConn()->prepare($query);
+
+                foreach ($datosRestaurante as $nombre => $valor) {
+                    $stmt->bindValue(':' . $nombre, $valor);
+                }
+
+                $stmt->execute();
+
+                return true;
+            } else {
+                return "No se encontró ningún registro con ese email.";
+            }
+        } catch (PDOException $ex) {
+            throw new Exception("Error al insertar: " . $ex->getMessage());
         }
     }
 

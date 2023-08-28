@@ -11,6 +11,10 @@ class Turista extends Usuario implements Crud
 
     private $motivoAlojamiento;
 
+    private $nombre;
+
+    private $apellido;
+
 
     public function __construct()
     {
@@ -45,6 +49,22 @@ class Turista extends Usuario implements Crud
     public function getMotivoAlojamiento()
     {
         return $this->motivoAlojamiento;
+    }
+
+    public function setNombre($nombre){
+        $this->nombre=$nombre;
+    }
+
+    public function getNombre(){
+        return $this->nombre;
+    }
+
+    public function setApellido($apellido){
+        $this->apellido;
+    }
+
+    public function getApellido(){
+        return $this->apellido;
     }
 
     public function create($tabla, $datos)
@@ -116,7 +136,6 @@ class Turista extends Usuario implements Crud
                 return "No se encontró ningún registro con ese email.";
             }
         } catch (PDOException $ex) {
-            // Aquí podrías lanzar una excepción personalizada o guardar el mensaje en una variable para un manejo más adecuado
             throw new Exception("Error al insertar: " . $ex->getMessage());
         }
     }
