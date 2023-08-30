@@ -1,6 +1,15 @@
 <?php
 require_once '../models/turista.php';
+require_once '../models/restaurante.php';
 require_once '../models/login.php';
+require_once '../models/session.php';
+
+function sessionControler($userModel, $flag, $paginaDestino)
+{
+    $session = new Session($userModel);
+    $session->setSession($flag, $paginaDestino);
+}
+
 
 function loginTuristaController($tabla, $datos)
 {
@@ -17,8 +26,11 @@ function loginRestauranteController($tabla, $datos)
     $login = new Login($restaurante);
     $restaurante->setEmail($datos['email']);
     $restaurante->setContrasenia($datos['contrasena']);
-    return $login->authenticate($tabla);
+    if ($login->authenticate($tabla)) {
+        return true;
+    }
 }
+
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -49,6 +61,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if (isset($data['email']) && isset($data['contrasena'])) {
                     // Intentar autenticar al usuario
                     if (loginTuristaController("usuarios", $data)) {
+                        $restaurante = new Restaurante();
+                        $restaurante->setEmail($data['email']);
+                        $restaurante->setContrasenia($data['contrasena']);
+                        sessionControler($restaurante, "email", "tr");
                         echo json_encode(array("mensaje" => "Logueado correctamente"));
                     } else {
                         echo json_encode(array("mensaje" => "Credenciales incorrectas"));

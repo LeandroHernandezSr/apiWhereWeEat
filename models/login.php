@@ -26,12 +26,7 @@ class Login
             if (!$userData) {
                 return false; // Usuario no encontrado
             }
-
-            var_dump($this->userModel->getEmail());
-            var_dump($this->userModel->getContrasenia());
-            var_dump($userData['contrasena']);
-
-
+            
             // Verificar la contraseña utilizando password_verify
             if (!password_verify($this->userModel->getContrasenia(), $userData['contrasena'])) {
                 echo "Incorrecto";
