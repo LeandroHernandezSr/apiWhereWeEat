@@ -1,7 +1,7 @@
 {
-    "db_host":"localhost:3310",
+    "db_host":"localhost:3306",
     "db_user":"root",
-    "db_password":"",
+    "db_password":"root",
     "db_driver":"mysql",
     "database":"wwe"
 }

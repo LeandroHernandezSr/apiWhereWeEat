@@ -24,15 +24,14 @@ class Login
             $userData = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$userData) {
-                return false; // Usuario no encontrado
+                return false;
             }
             
             // Verificar la contraseña utilizando password_verify
-            if (!password_verify($this->userModel->getContrasenia(), $userData['contrasena'])) {
-                echo "Incorrecto";
-                return false; // Autenticación exitosa
-            }
+            if (password_verify($this->userModel->getContrasenia(), $userData['contrasena'])) {
                 return true;
+            }
+                return false;
         } catch (PDOException $ex) {
             echo "Error en la conexión: " . $ex->getMessage();
         }
