@@ -8,4 +8,6 @@ if(!isset($_SESSION['email']) && !isset($_SESSION['contrasena']) || !isset($_SES
     $usuario=new Usuario();
     $session=new Session($usuario);
     $session->logout();
+}else{
+    echo "Estas conectado con la sesion de ".$_SESSION['email'];
 }
