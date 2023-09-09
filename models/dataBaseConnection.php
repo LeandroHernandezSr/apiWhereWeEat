@@ -90,4 +90,8 @@ abstract class DataBaseConnection
         return $this->conn;
     }
 
+    public function closeCon(){
+        return $this->conn=null;
+    }
+
 }
