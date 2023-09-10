@@ -1,5 +1,4 @@
 <?php
-require_once 'cors.php';
 class EntityController{
 
     private $model;
