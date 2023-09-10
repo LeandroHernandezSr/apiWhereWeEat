@@ -18,6 +18,7 @@ class Turista extends Usuario implements Crud
 
     public function __construct()
     {
+        $this->setDatCon('../turistaConfig.json');
         parent::__construct();
     }
 

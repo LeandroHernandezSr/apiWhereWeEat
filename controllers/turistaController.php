@@ -1,6 +1,7 @@
 <?php
 
 require_once '../models/turista.php';
+require_once 'cors.php';
 
 function insertarController($alias = '', $url_img_usuario = '', $email = '', $contrasena = '', $rol = '',$nacionalidad='',$motivoAlojamiento='',$nombres='',$apellidos='')
 {

@@ -14,6 +14,7 @@ class Restaurante extends Usuario implements Crud
 
     public function __construct()
     {
+        $this->setDatCon('../restauranteConfig.json');
         parent::__construct();
     }
 
@@ -70,10 +71,10 @@ class Restaurante extends Usuario implements Crud
             } else {
 
                 //Generar un hash seguro usando el algoritmo bcrypt
-                $hashedPass = password_hash($datos['contrasenia'], PASSWORD_BCRYPT);
+                $hashedPass = password_hash($datos['contrasena'], PASSWORD_BCRYPT);
 
                 //Almaceno nuevamente la contraseña
-                $datos['contrasenia'] = $hashedPass;
+                $datos['contrasena'] = $hashedPass;
 
                 $columnNames = implode(', ', array_keys($datos));
                 $placeholders = implode(', ', array_map(function ($key) {

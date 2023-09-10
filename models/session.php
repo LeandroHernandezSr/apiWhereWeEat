@@ -32,8 +32,8 @@ class Session{
     }
 
     function logout(){
+        session_start();
         session_destroy();
-        //Redirigo al login de la pagina
         header("location:http://localhost/Repositorio/apiWhereWeEat/views/login.php");
     }
     

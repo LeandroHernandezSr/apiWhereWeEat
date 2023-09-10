@@ -3,6 +3,7 @@ require_once '../models/turista.php';
 require_once '../models/restaurante.php';
 require_once '../models/login.php';
 require_once '../models/session.php';
+require_once 'cors.php';
 
 function loginTuristaController($tabla, $datos)
 {

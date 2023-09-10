@@ -7,6 +7,7 @@ class EntityModel extends DataBaseConnection
 
     function __construct()
     {
+        $this->setDatCon('../config.json');
         parent::__construct();
     }
 

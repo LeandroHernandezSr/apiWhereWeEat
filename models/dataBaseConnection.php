@@ -19,14 +19,6 @@ abstract class DataBaseConnection
 
     function __construct()
     {
-        $json = file_get_contents('../config.json');
-        $this->data = json_decode($json, true);
-        $this->host=$this->data['db_host'];
-        $this->user=$this->data['db_user'];
-        $this->password=$this->data['db_password'];
-        $this->driver=$this->data['db_driver'];
-        $this->database=$this->data['database'];
-        
         try {
             $this->conn = new PDO("$this->driver:host=$this->host;dbname=$this->database", $this->user, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -88,6 +80,16 @@ abstract class DataBaseConnection
     public function getConn()
     {
         return $this->conn;
+    }
+
+    public function setDatCon($json){
+        $json = file_get_contents($json);
+        $this->data = json_decode($json, true);
+        $this->host=$this->data['db_host'];
+        $this->user=$this->data['db_user'];
+        $this->password=$this->data['db_password'];
+        $this->driver=$this->data['db_driver'];
+        $this->database=$this->data['database'];
     }
 
     public function closeCon(){

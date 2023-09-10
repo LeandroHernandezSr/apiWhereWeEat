@@ -1,6 +1,6 @@
 <?php
 require_once '../models/restaurante.php';
-
+require_once 'cors.php';
 function insertarController($alias = '', $url_img_usuario = '', $email = '', $contrasena = '', $rol = '',$nombre='')
 {
     $restaurante = new Restaurante();
