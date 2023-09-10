@@ -1,5 +1,5 @@
 {
-    "db_host":"localhost:3306",
+    "db_host":"192.168.56.102:3306",
     "db_user":"root",
     "db_password":"root",
     "db_driver":"mysql",
