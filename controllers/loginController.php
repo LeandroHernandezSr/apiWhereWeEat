@@ -14,7 +14,9 @@ function loginTuristaController($tabla, $datos)
     if($login->authenticate($tabla)){
         $session = new Session($turista);
         $session->setSession("email");
+        return true;
     }
+    return false;
 }
 
 function loginRestauranteController($tabla, $datos)
@@ -46,6 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if (isset($data['email']) && isset($data['contrasena'])) {
                     if (!loginTuristaController("usuarios", $data)) {
                         echo json_encode(array("mensaje" => "Credenciales incorrectas"));
+                    }else{
+                        echo json_encode(array("mensaje" => "Logueado correctamente"));
                     }
                 } else {
                     echo json_encode(array("mensaje" => "Datos incompletos"));
@@ -57,6 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if (isset($data['email']) && isset($data['contrasena'])) {
                     if (!loginTuristaController("usuarios", $data)) {
                         echo json_encode(array("mensaje" => "Credenciales incorrectas"));
+                    }else{
+                        echo json_encode(array("mensaje" => "Logueado correctamente"));
                     }
                 } else {
                     echo json_encode(array("mensaje" => "Datos incompletos"));
