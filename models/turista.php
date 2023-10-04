@@ -1,6 +1,9 @@
 <?php
 include_once 'crud.php';
 include_once 'usuario.php';
+require '../vendor/autoload.php';
+
+use Dotenv\Dotenv;
 
 class Turista extends Usuario implements Crud
 {
@@ -18,7 +21,15 @@ class Turista extends Usuario implements Crud
 
     public function __construct()
     {
-        $this->setDatCon('../turistaConfig.json');
+        // Carga las variables de entorno desde el archivo .env
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../apiWhereWeEat');
+        $dotenv->load();
+        $this->setHost($_ENV['DB_HOST']);
+        $this->setUser($_ENV['DB_USERNAME']);
+        $this->setPassword($_ENV['DB_PASSWORD']);
+        $this->setDatabase($_ENV['DB_DATABASE']);
+        $this->setDriver($_ENV['DB_DRIVER']);
+        $this->setDatCon();
         parent::__construct();
     }
 
@@ -52,19 +63,23 @@ class Turista extends Usuario implements Crud
         return $this->motivoAlojamiento;
     }
 
-    public function setNombre($nombre){
-        $this->nombre=$nombre;
+    public function setNombre($nombre)
+    {
+        $this->nombre = $nombre;
     }
 
-    public function getNombre(){
+    public function getNombre()
+    {
         return $this->nombre;
     }
 
-    public function setApellido($apellido){
+    public function setApellido($apellido)
+    {
         $this->apellido;
     }
 
-    public function getApellido(){
+    public function getApellido()
+    {
         return $this->apellido;
     }
 
@@ -102,5 +117,4 @@ class Turista extends Usuario implements Crud
             throw new Exception("Error al insertar: " . $ex->getMessage());
         }
     }
-
 }

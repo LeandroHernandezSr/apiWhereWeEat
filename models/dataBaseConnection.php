@@ -82,14 +82,12 @@ abstract class DataBaseConnection
         return $this->conn;
     }
 
-    public function setDatCon($json){
-        $json = file_get_contents($json);
-        $this->data = json_decode($json, true);
-        $this->host=$this->data['db_host'];
-        $this->user=$this->data['db_user'];
-        $this->password=$this->data['db_password'];
-        $this->driver=$this->data['db_driver'];
-        $this->database=$this->data['database'];
+    public function setDatCon(){
+        $this->host=$this->getHost();
+        $this->user=$this->getUser();
+        $this->password=$this->getPassword();
+        $this->driver=$this->getDriver();
+        $this->database=$this->getDatabase();
     }
 
     public function closeCon(){
