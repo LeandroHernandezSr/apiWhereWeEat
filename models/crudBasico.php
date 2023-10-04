@@ -1,133 +1,16 @@
 <?php
 
-require_once 'dataBaseConnection.php';
-require_once 'crud.php';
+class CrudBasico extends DataBaseConnection implements Crud
+{
 
-class Usuario extends DataBaseConnection implements Crud{
-
-    private $alias;
-
-    private $email;
-
-    private $contrasenia;
-
-    private $activo;
-
-    private $bloqueado;
-
-    private $urlImagenUsuario;
-
-    private $fechaCambioPwd;
-
-    private $rol;
-
-    function  __construct(){
+    public function __construct()
+    {
         parent::__construct();
     }
 
-  
-	public function getAlias() {
-		return $this->alias;
-	}
-	
-
-	public function setAlias($alias): self {
-		$this->alias = $alias;
-		return $this;
-	}
-	
-
-	public function getEmail() {
-		return $this->email;
-	}
-	
-
-	public function setEmail($email): self {
-		$this->email = $email;
-		return $this;
-	}
-	
-	
-	public function getContrasenia() {
-		return $this->contrasenia;
-	}
-	
-
-	public function setContrasenia($contrasenia): self {
-		$this->contrasenia = $contrasenia;
-		return $this;
-	}
-	
-
-	public function getActivo() {
-		return $this->activo;
-	}
-
-	public function setActivo($activo): self {
-		$this->activo = $activo;
-		return $this;
-	}
-	
-
-	public function getBloqueado() {
-		return $this->bloqueado;
-	}
-	
-
-	public function setBloqueado($bloqueado): self {
-		$this->bloqueado = $bloqueado;
-		return $this;
-	}
-	
-
-	public function getUrlImagenUsuario() {
-		return $this->urlImagenUsuario;
-	}
-	
-
-	public function setUrlImagenUsuario($urlImagenUsuario): self {
-		$this->urlImagenUsuario = $urlImagenUsuario;
-		return $this;
-	}
-	
-	
-	public function getFechaCambioPwd() {
-		return $this->fechaCambioPwd;
-	}
-	
-	public function setFechaCambioPwd($fechaCambioPwd): self {
-		$this->fechaCambioPwd = $fechaCambioPwd;
-		return $this;
-	}
-	
-	
-	public function getRol() {
-		return $this->rol;
-	}
-
-
-	public function setRol($rol): self {
-		$this->rol = $rol;
-		return $this->rol;
-	}
-
-
-	public function create($tabla, $datos)
+    public function create($tabla, $datos)
     {
         try {
-            $query = "SELECT * FROM $tabla WHERE email = :email";
-            $stmt = $this->getConn()->prepare($query);
-            $stmt->bindValue(':email', $datos['email']);
-            $stmt->execute();
-
-            if ($stmt->rowCount() > 0) {
-                return false;
-            } else {
-                $hashedPass = password_hash($datos['contrasena'],PASSWORD_BCRYPT);
-        
-                //Almaceno nuevamente la contraseña
-                $datos['contrasena'] = $hashedPass;
-
                 $columnNames = implode(', ', array_keys($datos));
                 $placeholders = implode(', ', array_map(function ($key) {
                     return ':' . $key;
@@ -144,7 +27,7 @@ class Usuario extends DataBaseConnection implements Crud{
                 $stmt->execute();
 
                 return true;
-            }
+            
         } catch (PDOException $ex) {
             echo "Error al insertar: " . $ex->getMessage();
         }
@@ -192,7 +75,6 @@ class Usuario extends DataBaseConnection implements Crud{
 
     public function alter($data)
     {
-
     }
 
 
@@ -237,5 +119,4 @@ class Usuario extends DataBaseConnection implements Crud{
 
         return $result;
     }
-	
 }
