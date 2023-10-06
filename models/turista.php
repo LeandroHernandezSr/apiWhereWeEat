@@ -5,7 +5,7 @@ require '../vendor/autoload.php';
 
 use Dotenv\Dotenv;
 
-class Turista extends Usuario implements Crud
+class Turista extends Usuario
 {
 
     private $idUsuario;
