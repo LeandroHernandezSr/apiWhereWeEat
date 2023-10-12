@@ -1,6 +1,7 @@
 <?php
 require_once '../models/restaurante.php';
 require_once '../models/platoRestaurante.php';
+require_once '../models/descuento.php';
 require_once 'cors.php';
 function insertarController($alias = '', $url_img_usuario = '', $email = '', $contrasena = '', $rol = '', $nombre = '')
 {
@@ -43,6 +44,21 @@ function crearPlato($id_plato, $nombre_plato, $costo, $descripcion, $url_img_men
     return $plato->persistirPlato();
 }
 
+
+function crearDescuento($idDescuento, $idRestaurante, $activo, $tituloDescuento, $descripcion, $urlImgDescuento, $fechaInicio, $fechaFin)
+{
+    $descuento = new Descuento();
+    $descuento->setIdDescuento($idDescuento);
+    $descuento->setIdRestaurante($idRestaurante);
+    $descuento->setActivo($activo);
+    $descuento->setTituloDescuento($tituloDescuento);
+    $descuento->setDescripcion($descripcion);
+    $descuento->setUrlImagenDesc($urlImgDescuento);
+    $descuento->setFechaInicio($fechaInicio);
+    $descuento->setFechaFin($fechaFin);
+    return $descuento->crearDescuento();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
@@ -69,6 +85,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $data['url_img_menu'],
                     $data['estado_plato'],
                     $data['id_usuario_rest']
+                );
+                break;
+            case "crearDescuento":
+                $resultado = crearDescuento(
+                    $data['id_descuento'],
+                    $data['id_usuario_rest'],
+                    $data['activo'],
+                    $data['titulo_descuento'],
+                    $data['descripcion'],
+                    $data['url_img_descuento'],
+                    $data['fecha_inicio'],
+                    $data['fecha_fin']
                 );
                 break;
             default:
