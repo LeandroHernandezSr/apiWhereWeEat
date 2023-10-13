@@ -1,0 +1,7 @@
+Eliminar la carpeta vendor y el archivo composer.lock: 
+Para asegurarte de que no haya problemas de corrupción en las dependencias existentes, borra la carpeta vendor y el archivo composer.lock de tu proyecto y luego ejecuta nuevamente composer install para reinstalar todas las dependencias desde cero.
+
+Actualizar Composer: Asegúrate de que tienes la última versión de Composer instalada en tu sistema.
+
+Comando:
+composer self-update
